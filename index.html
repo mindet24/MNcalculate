@@ -40,10 +40,46 @@
     padding: 56px 0 30px;
   }
 
+  .hero{
+    position: relative;
+    overflow: hidden;
+    padding: clamp(30px, 6vw, 52px);
+    border: 1px solid #DCD7F5;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #F3EDFF 0%, #E8EEFF 52%, #E5F8FF 100%);
+    box-shadow: 0 16px 38px rgba(108, 92, 180, .12);
+  }
+
+  .hero::before,
+  .hero::after{
+    position: absolute;
+    content: "";
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    filter: blur(4px);
+    opacity: .55;
+    pointer-events: none;
+  }
+
+  .hero::before{
+    top: -125px;
+    right: -60px;
+    background: #BFD6FF;
+  }
+
+  .hero::after{
+    bottom: -150px;
+    left: 42%;
+    background: #E6C8FF;
+  }
+
+  .hero > *{ position: relative; z-index: 1; }
+
   .intro-kicker, .intro-label{
     font-family: var(--mono);
     font-size: 13px;
-    color: var(--accent);
+    color: #6553A9;
     letter-spacing: .02em;
   }
 
@@ -68,7 +104,7 @@
     margin-top: 24px;
     padding: 13px 20px;
     border-radius: 9px;
-    background: var(--accent);
+    background: linear-gradient(135deg, #7867C5, #5C9FE0);
     color: #fff;
     font-weight: 600;
     text-decoration: none;
@@ -318,10 +354,12 @@
 <body>
 
 <section class="intro" aria-labelledby="intro-title">
-  <div class="intro-kicker">CONVERT // เว็บแปลงหน่วย</div>
-  <h1 id="intro-title">แปลงหน่วยง่าย ๆ<br>พร้อมอัตราแลกเปลี่ยนล่าสุด</h1>
-  <p class="intro-lede">รวมการแปลงอุณหภูมิ เงินตรา และระยะทางไว้ในหน้าเดียว ผลลัพธ์อัปเดตทันทีเมื่อพิมพ์ตัวเลข และมีค่าอัตราสำรองเมื่อเชื่อมต่อข้อมูลล่าสุดไม่ได้</p>
-  <a class="intro-cta" href="#calculator">เริ่มแปลงหน่วย ↓</a>
+  <div class="hero">
+    <div class="intro-kicker">MNcalculate // เว็บแปลงหน่วย</div>
+    <h1 id="intro-title">แปลงหน่วยง่าย ๆ<br>พร้อมอัตราแลกเปลี่ยนล่าสุด</h1>
+    <p class="intro-lede">รวมการแปลงอุณหภูมิ เงินตรา และระยะทางไว้ในหน้าเดียว ผลลัพธ์อัปเดตทันทีเมื่อพิมพ์ตัวเลข และมีค่าอัตราสำรองเมื่อเชื่อมต่อข้อมูลล่าสุดไม่ได้</p>
+    <a class="intro-cta" href="#calculator">เริ่มแปลงหน่วย ↓</a>
+  </div>
 
   <div class="intro-label">จุดเด่น</div>
   <div class="feature-grid">
@@ -493,7 +531,7 @@
 
   </div>
 
-  <footer>ทำด้วย HTML · CSS · JavaScript อย่างง่าย by วีระศักดิ์ แอ่น ศักดิ์ดินนท์</footer>
+  <footer>ทำด้วย HTML · CSS · JavaScript อย่างง่าย by วีระศักดิ์ แอ่น ศักดิ์ดินนท์/n dd</footer>
 </div>
 
 <script>
