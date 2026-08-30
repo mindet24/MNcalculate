@@ -417,9 +417,6 @@
   [tempInput, tempFrom, tempTo].forEach(el => el.addEventListener('input', updateTemp));
 
   // ---------- CURRENCY ----------
-  // API key ของผู้ใช้ (ExchangeRate-API) - ใช้สำหรับดึงอัตราแลกเปลี่ยนสด
-  const EXCHANGE_API_KEY = 'b65bdc4b170da018c0957918';
-
   // อัตราสำรอง (amount ต่อ 1 THB) กรณีดึงข้อมูลสดไม่สำเร็จ
   const fallbackRatesPerTHB = {
     THB: 1,
@@ -440,14 +437,15 @@
 
   async function loadLiveRates(){
     try{
-      const res = await fetch(`https://v6.exchangerate-api.com/v6/${EXCHANGE_API_KEY}/latest/THB`);
+      const res = await fetch('https://api.frankfurter.dev/v1/latest?base=THB');
+      if(!res.ok) throw new Error('ไม่สามารถเชื่อมต่อบริการอัตราแลกเปลี่ยน');
       const data = await res.json();
-      if(data.result === 'success'){
-        liveRatesPerTHB = data.conversion_rates;
+      if(data.rates){
+        liveRatesPerTHB = { THB: 1, ...data.rates };
         ratesUpdatedAt = new Date();
-        curStatus.textContent = 'อัตราแลกเปลี่ยนสด ณ ' + ratesUpdatedAt.toLocaleString('th-TH');
+        curStatus.textContent = 'อัตราแลกเปลี่ยนล่าสุด ณ ' + data.date;
       } else {
-        throw new Error(data['error-type'] || 'ดึงข้อมูลไม่สำเร็จ');
+        throw new Error('ดึงข้อมูลไม่สำเร็จ');
       }
     } catch(err){
       curStatus.textContent = 'ดึงอัตราสดไม่สำเร็จ ใช้ค่าประมาณสำรองแทน (' + err.message + ')';
