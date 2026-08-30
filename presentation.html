@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตัวแปลงหน่วย — แปลงค่าแบบเรียลไทม์</title>
+<style>
+  :root{
+    --bg: #EEF1F0;
+    --panel: #FFFFFF;
+    --ink: #1C2B2A;
+    --ink-soft: #5B6B69;
+    --accent: #2F6F62;
+    --accent-soft: #DCEAE6;
+    --line: #D5DDDB;
+    --mono: "Courier New", ui-monospace, Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+  }
+
+  .container{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 20px 80px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero-kicker{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  h1{
+    font-size: 40px;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .hero p{
+    font-size: 16.5px;
+    color: var(--ink-soft);
+    max-width: 480px;
+    margin: 0 0 32px;
+  }
+
+  /* live demo strip in hero */
+  .live-demo{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+
+  .live-demo .pulse{
+    display:inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 8px;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse{
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .live-demo .status{
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .live-demo .rate{
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .live-demo .rate span{
+    color: var(--accent);
+  }
+
+  .cta{
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15.5px;
+    padding: 14px 26px;
+    border-radius: 9px;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+
+  .cta:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(47, 111, 98, 0.25);
+  }
+
+  /* ---------- FEATURES ---------- */
+  .section-label{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    margin: 64px 0 20px;
+  }
+
+  .feature{
+    display: flex;
+    gap: 18px;
+    padding: 22px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .feature:last-child{
+    border-bottom: 1px solid var(--line);
+  }
+
+  .feature .num{
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--ink-soft);
+    flex: 0 0 28px;
+    padding-top: 2px;
+  }
+
+  .feature .body h3{
+    margin: 0 0 6px;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .feature .body p{
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    max-width: 460px;
+  }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .flow{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px 24px;
+    margin-top: 8px;
+  }
+
+  .flow-step{
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+  }
+
+  .flow-step .dot{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 2px 8px;
+    flex-shrink: 0;
+  }
+
+  .flow-step p{
+    margin: 0;
+    font-size: 14.5px;
+  }
+
+  .flow-arrow{
+    text-align: center;
+    color: var(--line);
+    font-size: 14px;
+  }
+
+  /* ---------- STACK ---------- */
+  .stack-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .stack-item{
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 8px 14px;
+    border-radius: 20px;
+    color: var(--ink);
+  }
+
+  /* ---------- BOTTOM CTA ---------- */
+  .bottom-cta{
+    margin-top: 64px;
+    text-align: center;
+    padding: 40px 24px;
+    background: var(--accent-soft);
+    border-radius: 16px;
+  }
+
+  .bottom-cta h2{
+    margin: 0 0 10px;
+    font-size: 22px;
+  }
+
+  .bottom-cta p{
+    margin: 0 0 22px;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+  }
+
+  footer{
+    text-align: center;
+    margin-top: 40px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 480px){
+    h1{ font-size: 30px; }
+    .live-demo{ flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero-kicker">CONVERT // เว็บแปลงหน่วย</div>
+  <h1>แปลงหน่วยที่ไม่ได้แปลงแบบเดา<br>แต่ดึงอัตราจริงมาให้</h1>
+  <p>อุณหภูมิ เงินตรา และระยะทาง ในเว็บเดียว โดยอัตราแลกเปลี่ยนเงินดึงมาจาก API สดทุกครั้งที่เปิดหน้า ไม่ใช่ตัวเลขที่ตั้งไว้ตายตัว</p>
+
+  <div class="live-demo">
+    <div>
+      <div class="status"><span class="pulse"></span>ดึงข้อมูลอัตราแลกเปลี่ยนล่าสุด</div>
+      <div class="rate">1 USD = <span id="live-rate">36.10</span> THB</div>
+    </div>
+    <a href="index.html" class="cta">ทดลองใช้เว็บ →</a>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="section-label">จุดเด่น</div>
+
+  <div class="feature">
+    <div class="num">01</div>
+    <div class="body">
+      <h3>ดึงอัตราแลกเปลี่ยนล่าสุดจาก API</h3>
+      <p>ไม่ใช้ตัวเลขคงที่ที่ฝังไว้ในโค้ด แต่เรียกบริการอัตราแลกเปลี่ยนทุกครั้งที่เปิดหน้าเว็บ เพื่อให้ได้ข้อมูลล่าสุด ณ ตอนนั้น</p>
+    </div>
+  </div>
+
+  <div class="feature">
+    <div class="num">02</div>
+    <div class="body">
+      <h3>มีระบบสำรองเมื่อดึงข้อมูลไม่สำเร็จ</h3>
+      <p>ถ้าเน็ตหลุดหรือ API ใช้งานไม่ได้ เว็บจะสลับไปใช้อัตราประมาณสำรองโดยอัตโนมัติ แทนที่จะแสดงหน้าเปล่าหรือพัง</p>
+    </div>
+  </div>
+
+  <div class="feature">
+    <div class="num">03</div>
+    <div class="body">
+      <h3>คำนวณผลลัพธ์ทันทีที่พิมพ์</h3>
+      <p>ไม่ต้องกดปุ่ม "คำนวณ" — พิมพ์ตัวเลขหรือเปลี่ยนหน่วยปุ๊บ ผลลัพธ์อัปเดตทันทีด้วย JavaScript ล้วนๆ</p>
+    </div>
+  </div>
+
+  <div class="feature">
+    <div class="num">04</div>
+    <div class="body">
+      <h3>รวม 3 ตัวแปลงไว้ในที่เดียว</h3>
+      <p>อุณหภูมิ (°C · °F · K), เงินตรา (THB · USD · EUR · JPY · GBP) และระยะทาง (m · km · cm · mi · yd · ft) สลับดูได้ด้วยแท็บเดียว</p>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section-label">การทำงานเบื้องหลัง</div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="dot">01</div>
+      <p>ผู้ใช้เปิดหน้าเว็บ → เบราว์เซอร์ส่ง request ไปยังบริการอัตราแลกเปลี่ยน</p>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="dot">02</div>
+      <p>API ตอบกลับด้วยอัตราแลกเปลี่ยนล่าสุดของทุกสกุลเงิน</p>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="dot">03</div>
+      <p>JavaScript เก็บอัตราไว้ในตัวแปร แล้วคำนวณใหม่ทุกครั้งที่ผู้ใช้พิมพ์หรือเปลี่ยนหน่วย</p>
+    </div>
+  </div>
+
+  <!-- STACK -->
+  <div class="section-label">เครื่องมือที่ใช้</div>
+  <div class="stack-list">
+    <span class="stack-item">HTML5</span>
+    <span class="stack-item">CSS3</span>
+    <span class="stack-item">JavaScript (Vanilla)</span>
+    <span class="stack-item">Fetch API</span>
+    <span class="stack-item">Frankfurter API</span>
+  </div>
+
+  <!-- BOTTOM CTA -->
+  <div class="bottom-cta">
+    <h2>พร้อมลองใช้งานจริงหรือยัง?</h2>
+    <p>เปิดเครื่องมือแปลงหน่วยแล้วลองพิมพ์ตัวเลขดูได้เลย</p>
+    <a href="index.html" class="cta">เปิดเครื่องมือแปลงหน่วย →</a>
+  </div>
+
+  <footer>ทำด้วย HTML · CSS · JavaScript</footer>
+
+</div>
+
+<script>
+  // แสดงอัตราตัวอย่างในหน้า hero (ดึงจริงจาก API เดียวกับหน้าเครื่องมือ)
+  fetch('https://api.frankfurter.dev/v1/latest?base=THB')
+    .then(res => res.json())
+    .then(data => {
+      if(data.rates && data.rates.USD){
+        document.getElementById('live-rate').textContent = (1 / data.rates.USD).toFixed(2);
+      }
+    })
+    .catch(() => { /* คงค่าตัวอย่างเดิมไว้ถ้าดึงไม่สำเร็จ */ });
+</script>
+
+</body>
+</html>
