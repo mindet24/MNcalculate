@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตัวแปลงหน่วย | อุณหภูมิ · เงิน · ระยะทาง</title>
+<style>
+  :root{
+    --bg: #EEF1F0;
+    --panel: #FFFFFF;
+    --ink: #1C2B2A;
+    --ink-soft: #5B6B69;
+    --accent: #2F6F62;
+    --accent-soft: #DCEAE6;
+    --line: #D5DDDB;
+    --mono: "Courier New", ui-monospace, Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 32px 16px;
+  }
+
+  .wrap{
+    width:100%;
+    max-width: 560px;
+  }
+
+  header{
+    margin-bottom: 22px;
+  }
+
+  header .kicker{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+  }
+
+  h1{
+    font-size: 28px;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  header p{
+    margin: 8px 0 0;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .tabs{
+    display:flex;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .tab{
+    flex:1;
+    padding: 14px 8px;
+    text-align:center;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor:pointer;
+    background: var(--panel);
+    border:none;
+    border-bottom: 2px solid transparent;
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+  }
+
+  .tab:hover{ color: var(--ink); }
+
+  .tab.active{
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .panel{
+    padding: 26px 24px 24px;
+    display:none;
+  }
+
+  .panel.active{ display:block; }
+
+  .row{
+    display:flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .field{
+    flex: 1;
+    display:flex;
+    flex-direction:column;
+    gap: 6px;
+  }
+
+  .field label{
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  input[type="number"]{
+    font-family: var(--mono);
+    font-size: 20px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--ink);
+    width: 100%;
+  }
+
+  select{
+    font-family: var(--sans);
+    font-size: 14.5px;
+    padding: 10px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  input[type="number"]:focus, select:focus{
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .swap{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin: 16px 0;
+  }
+
+  .swap button{
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--accent);
+    font-size: 16px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor:pointer;
+    transition: background .15s ease, transform .15s ease;
+  }
+
+  .swap button:hover{
+    background: var(--accent-soft);
+    transform: rotate(180deg);
+  }
+
+  .result{
+    margin-top: 20px;
+    padding: 18px;
+    background: var(--accent-soft);
+    border-radius: 10px;
+    text-align:center;
+  }
+
+  .result .label{
+    font-size: 12.5px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .result .value{
+    font-family: var(--mono);
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--ink);
+    word-break: break-all;
+  }
+
+  .note{
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  footer{
+    text-align:center;
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 420px){
+    h1{ font-size: 23px; }
+    .panel{ padding: 20px 16px; }
+    .result .value{ font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">CONVERT // 01</div>
+    <h1>ตัวแปลงหน่วย</h1>
+    <p>แปลงอุณหภูมิ เงินตรา และระยะทาง แบบเรียลไทม์ — พิมพ์ตัวเลขแล้วผลลัพธ์อัปเดตทันที</p>
+  </header>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" data-tab="temp">อุณหภูมิ</button>
+      <button class="tab" data-tab="currency">เงินตรา</button>
+      <button class="tab" data-tab="distance">ระยะทาง</button>
+    </div>
+
+    <!-- TEMPERATURE -->
+    <div class="panel active" id="panel-temp">
+      <div class="row">
+        <div class="field">
+          <label for="temp-input">ค่าที่ต้องการแปลง</label>
+          <input type="number" id="temp-input" value="0">
+        </div>
+        <div class="field" style="flex: 0 0 110px;">
+          <label for="temp-from">จาก</label>
+          <select id="temp-from">
+            <option value="C">°C</option>
+            <option value="F">°F</option>
+            <option value="K">K</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="swap">
+        <button id="temp-swap" title="สลับหน่วย">⇅</button>
+      </div>
+
+      <div class="row">
+        <div class="field" style="flex: 0 0 110px;">
+          <label for="temp-to">เป็น</label>
+          <select id="temp-to">
+            <option value="C">°C</option>
+            <option value="F" selected>°F</option>
+            <option value="K">K</option>
+          </select>
+        </div>
+        <div class="field"></div>
+      </div>
+
+      <div class="result">
+        <div class="label">ผลลัพธ์</div>
+        <div class="value" id="temp-result">32</div>
+      </div>
+    </div>
+
+    <!-- CURRENCY -->
+    <div class="panel" id="panel-currency">
+      <div class="row">
+        <div class="field">
+          <label for="cur-input">จำนวนเงิน</label>
+          <input type="number" id="cur-input" value="100">
+        </div>
+        <div class="field" style="flex: 0 0 110px;">
+          <label for="cur-from">จาก</label>
+          <select id="cur-from">
+            <option value="THB">THB บาท</option>
+            <option value="USD">USD ดอลลาร์</option>
+            <option value="EUR">EUR ยูโร</option>
+            <option value="JPY">JPY เยน</option>
+            <option value="GBP">GBP ปอนด์</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="swap">
+        <button id="cur-swap" title="สลับหน่วย">⇅</button>
+      </div>
+
+      <div class="row">
+        <div class="field" style="flex: 0 0 110px;">
+          <label for="cur-to">เป็น</label>
+          <select id="cur-to">
+            <option value="THB">THB บาท</option>
+            <option value="USD" selected>USD ดอลลาร์</option>
+            <option value="EUR">EUR ยูโร</option>
+            <option value="JPY">JPY เยน</option>
+            <option value="GBP">GBP ปอนด์</option>
+          </select>
+        </div>
+        <div class="field"></div>
+      </div>
+
+      <div class="result">
+        <div class="label">ผลลัพธ์</div>
+        <div class="value" id="cur-result">2.78</div>
+      </div>
+
+      <div class="note" id="cur-status">
+        กำลังโหลดอัตราแลกเปลี่ยนล่าสุด...
+      </div>
+    </div>
+
+    <!-- DISTANCE -->
+    <div class="panel" id="panel-distance">
+      <div class="row">
+        <div class="field">
+          <label for="dist-input">ระยะทาง</label>
+          <input type="number" id="dist-input" value="1">
+        </div>
+        <div class="field" style="flex: 0 0 110px;">
+          <label for="dist-from">จาก</label>
+          <select id="dist-from">
+            <option value="m">เมตร</option>
+            <option value="km" selected>กิโลเมตร</option>
+            <option value="cm">เซนติเมตร</option>
+            <option value="mi">ไมล์</option>
+            <option value="yd">หลา</option>
+            <option value="ft">ฟุต</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="swap">
+        <button id="dist-swap" title="สลับหน่วย">⇅</button>
+      </div>
+
+      <div class="row">
+        <div class="field" style="flex: 0 0 110px;">
+          <label for="dist-to">เป็น</label>
+          <select id="dist-to">
+            <option value="m">เมตร</option>
+            <option value="km">กิโลเมตร</option>
+            <option value="cm">เซนติเมตร</option>
+            <option value="mi" selected>ไมล์</option>
+            <option value="yd">หลา</option>
+            <option value="ft">ฟุต</option>
+          </select>
+        </div>
+        <div class="field"></div>
+      </div>
+
+      <div class="result">
+        <div class="label">ผลลัพธ์</div>
+        <div class="value" id="dist-result">0.6214</div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>ทำด้วย HTML · CSS · JavaScript</footer>
+</div>
+
+<script>
+  // ---------- TAB SWITCHING ----------
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ---------- TEMPERATURE ----------
+  function toCelsius(value, unit){
+    if(unit === 'C') return value;
+    if(unit === 'F') return (value - 32) * 5/9;
+    if(unit === 'K') return value - 273.15;
+  }
+  function fromCelsius(value, unit){
+    if(unit === 'C') return value;
+    if(unit === 'F') return (value * 9/5) + 32;
+    if(unit === 'K') return value + 273.15;
+  }
+
+  const tempInput = document.getElementById('temp-input');
+  const tempFrom = document.getElementById('temp-from');
+  const tempTo = document.getElementById('temp-to');
+  const tempResult = document.getElementById('temp-result');
+  const tempUnitSymbol = { C: '°C', F: '°F', K: 'K' };
+
+  function updateTemp(){
+    const value = parseFloat(tempInput.value) || 0;
+    const celsius = toCelsius(value, tempFrom.value);
+    const result = fromCelsius(celsius, tempTo.value);
+    tempResult.textContent = round(result) + ' ' + tempUnitSymbol[tempTo.value];
+  }
+
+  document.getElementById('temp-swap').addEventListener('click', () => {
+    const a = tempFrom.value, b = tempTo.value;
+    tempFrom.value = b; tempTo.value = a;
+    updateTemp();
+  });
+
+  [tempInput, tempFrom, tempTo].forEach(el => el.addEventListener('input', updateTemp));
+
+  // ---------- CURRENCY ----------
+  // API key ของผู้ใช้ (ExchangeRate-API) - ใช้สำหรับดึงอัตราแลกเปลี่ยนสด
+  const EXCHANGE_API_KEY = 'b65bdc4b170da018c0957918';
+
+  // อัตราสำรอง (amount ต่อ 1 THB) กรณีดึงข้อมูลสดไม่สำเร็จ
+  const fallbackRatesPerTHB = {
+    THB: 1,
+    USD: 0.02778,
+    EUR: 0.02532,
+    JPY: 4.1667,
+    GBP: 0.02174
+  };
+
+  let liveRatesPerTHB = null;
+  let ratesUpdatedAt = null;
+
+  const curInput = document.getElementById('cur-input');
+  const curFrom = document.getElementById('cur-from');
+  const curTo = document.getElementById('cur-to');
+  const curResult = document.getElementById('cur-result');
+  const curStatus = document.getElementById('cur-status');
+
+  async function loadLiveRates(){
+    try{
+      const res = await fetch(`https://v6.exchangerate-api.com/v6/${EXCHANGE_API_KEY}/latest/THB`);
+      const data = await res.json();
+      if(data.result === 'success'){
+        liveRatesPerTHB = data.conversion_rates;
+        ratesUpdatedAt = new Date();
+        curStatus.textContent = 'อัตราแลกเปลี่ยนสด ณ ' + ratesUpdatedAt.toLocaleString('th-TH');
+      } else {
+        throw new Error(data['error-type'] || 'ดึงข้อมูลไม่สำเร็จ');
+      }
+    } catch(err){
+      curStatus.textContent = 'ดึงอัตราสดไม่สำเร็จ ใช้ค่าประมาณสำรองแทน (' + err.message + ')';
+    }
+    updateCurrency();
+  }
+
+  function updateCurrency(){
+    const rates = liveRatesPerTHB || fallbackRatesPerTHB;
+    const value = parseFloat(curInput.value) || 0;
+    const thbValue = value / rates[curFrom.value];
+    const result = thbValue * rates[curTo.value];
+    curResult.textContent = round(result) + ' ' + curTo.value;
+  }
+
+  document.getElementById('cur-swap').addEventListener('click', () => {
+    const a = curFrom.value, b = curTo.value;
+    curFrom.value = b; curTo.value = a;
+    updateCurrency();
+  });
+
+  [curInput, curFrom, curTo].forEach(el => el.addEventListener('input', updateCurrency));
+
+  // ---------- DISTANCE ----------
+  // อัตราคงที่เทียบกับเมตร
+  const distToMeters = {
+    m: 1,
+    km: 1000,
+    cm: 0.01,
+    mi: 1609.344,
+    yd: 0.9144,
+    ft: 0.3048
+  };
+
+  const distInput = document.getElementById('dist-input');
+  const distFrom = document.getElementById('dist-from');
+  const distTo = document.getElementById('dist-to');
+  const distResult = document.getElementById('dist-result');
+
+  function updateDistance(){
+    const value = parseFloat(distInput.value) || 0;
+    const meters = value * distToMeters[distFrom.value];
+    const result = meters / distToMeters[distTo.value];
+    distResult.textContent = round(result) + ' ' + distTo.value;
+  }
+
+  document.getElementById('dist-swap').addEventListener('click', () => {
+    const a = distFrom.value, b = distTo.value;
+    distFrom.value = b; distTo.value = a;
+    updateDistance();
+  });
+
+  [distInput, distFrom, distTo].forEach(el => el.addEventListener('input', updateDistance));
+
+  // ---------- HELPER ----------
+  function round(n){
+    return Math.round(n * 10000) / 10000;
+  }
+
+  // Initial run
+  updateTemp();
+  loadLiveRates();
+  updateDistance();
+</script>
+
+</body>
+</html>
